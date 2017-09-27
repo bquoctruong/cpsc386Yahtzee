@@ -16,8 +16,8 @@ class player:
     #variables
     numberOfRolls = 0
     score = 0
-    rollingDices = [1, 2, 3, 4, 5, 6]
-    keptDice = [0, 0, 0, 0, 0, 0]
+    rollingDices = [1, 2, 3, 4, 5]
+    keptDice = [0, 0, 0, 0, 0]
    
     # Function: rollDices
     # Date of code (Last updated): 9/25/2017
