@@ -18,6 +18,20 @@ class player:
     score = 0
     rollingDices = [1, 2, 3, 4, 5]
     keptDice = [0, 0, 0, 0, 0]
+
+    acesScore = 0
+    twosScore = 0
+    threesScore = 0
+    foursScore = 0
+    fivesScore = 0
+    sixesScore = 0
+    threeOfAKindScore = 0
+    fourOfAKindScore = 0
+    fullHouseScore = 0
+    smallStraightScore = 0
+    largeStraightScore = 0
+    yahtzeeScore = 0
+    chanceScore = 0
    
     # Function: rollDices
     # Date of code (Last updated): 9/25/2017
@@ -73,8 +87,8 @@ class Rules:
     fours = False
     fives = False
     six = False
-    threeOfAKind = False
-    fourOfAKind = False
+    largeStraight = False
+    smallStraight = False
     fullHouse = False
     smallStraight = False
     largeStraight = False
@@ -88,7 +102,6 @@ class Rules:
     # Input: list(dice)
     # Output: 
     def runUpperSection(dice):
-        player.printDices(dice, "Kept dice")
         Rules.isAces(dice)
         Rules.isTwos(dice)
         Rules.isThrees(dice)
@@ -138,7 +151,7 @@ class Rules:
         if (sum > 0):
                 print("You have Threes! Sum: ", sum)
 
-    # Function: isAces
+    # Function: isFours
     # Date of code (Last updated): 9/25/2017
     # Programmer: Brian Truong
     # Description: Given a set of dice, determines if the dices have fours and sums up all "fours"
@@ -152,7 +165,7 @@ class Rules:
         if (sum > 0):
                 print("You have Fours! Sum: ", sum)
 
-    # Function: isAces
+    # Function: isFives
     # Date of code (Last updated): 9/25/2017
     # Programmer: Brian Truong
     # Description: Given a set of dice, determines if the dices have fives and sums up all "fives"
@@ -166,7 +179,7 @@ class Rules:
         if (sum > 0):
                 print("You have Fives! Sum: ", sum)
 
-    # Function: isAces
+    # Function: isSixes
     # Date of code (Last updated): 9/25/2017
     # Programmer: Brian Truong
     # Description: Given a set of dice, determines if the dices have sixes and sums up all "sixes"
@@ -181,23 +194,82 @@ class Rules:
                 print("You have Sixes! Sum: ", sum)
     
     # Function: isThreeOfAKind
-    # Date of code (Last updated): 9/27/2017
+    # Date of code (Last updated): 9/28/2017
     # Programmer: Brian Truong
-    # Description: To determine if the player rolled a three-of-a-kind
+    # Description: Checks if player has Three of a Kind
     # Input: list(dice)
     # Output: Boolean threeOfAKind
-    #9/27 NOTE: Functions okay; not consistent
     def isThreeOfAKind(dice):
         sum = 0
-        print("Begin sorting")
+        if (dice[2] == dice[3] == dice[4]):
+            sum = dice[0] + dice[1] + dice[2] + dice[3] + dice[4]
+            print("You have Three of a Kind! Sum: ", sum)
+            threeOfAKind = True
+            return threeOfAKind
+        elif(dice[1] == dice[2] == dice[3]):
+            sum = dice[0] + dice[1] + dice[2] + dice[3] + dice[4]
+            print("You have Three of a Kind! Sum: ", sum)
+            threeOfAKind = True
+            return threeOfAKind
+        elif(dice[0] == dice[1] == dice[2]):
+            sum = dice[0] + dice[1] + dice[2] + dice[3] + dice[4]
+            print("You have Three of a Kind! Sum: ", sum)
+            threeOfAKind = True
+            return threeOfAKind
+
+    # Function: isFourOfAKind
+    # Date of code (Last updated): 9/28/2017
+    # Programmer: Brian Truong
+    # Description: Checks if player has Four of a Kind
+    # Input: list(dice)
+    # Output: Boolean fourOfAKind
+    def isFourOfAKind(dice):
+        sum = 0
+        if (dice[1]== dice[2] == dice[3] == dice[4]):
+            sum = dice[0] + dice[1] + dice[2] + dice[3] + dice[4]
+            print("You have Four of a Kind! Sum: ", sum)
+            fourOfAKind = True
+            return fourOfAKind
+        elif(dice[0] == dice[1] == dice[2] == dice[3]):
+            sum = dice[0] + dice[1] + dice[2] + dice[3] + dice[4]
+            print("You have Four of a Kind! Sum: ", sum)
+            fourOfAKind = True
+            return fourOfAKind
+        
+    # Function: isFullHouse
+    # Date of code (Last updated): 9/28/2017
+    # Programmer: Brian Truong
+    # Description: checks if the player kept a Full House
+    # Input: dice
+    # Output: Boolean fullHouse
+    def isFullHouse(dice):
+        sum = 0
         dice.sort()
+        if (dice[0] == dice[1] and dice[2] == dice[3] == dice[4]):
+            sum = 25
+            print("You have a Full House! Sum: ", sum)
+            fullHouse = True
+            return fullHouse
+        elif(dice[0] == dice[1] == dice[2] and dice[3] == dice[4]):
+            sum = 25
+            print("You have a Full House! Sum: ", sum)
+            fullHouse = True
+            return fullHouse
+
+    # Function: isSmallStraight
+    # Date of code (Last updated): 9/28/2017
+    # Programmer: Brian Truong
+    # Description: Detects if the kept dice have a Small Straight
+    # Input: list(dice)
+    # Output: Boolean smallStraight
+    def isSmallStraight(dice):
+        sum = 0
+        #print("Begin sorting")
         list = [0, 0, 0, 0, 0, 0]
-        print("Finish sorting")
-        player.printDices(dice, "Sorted dice")
 
         #detects dice number and assigns them a slot in list
         #does not store duplicates
-        print("Checking dices")
+        #print("Checking dices")
         for x in range(len(dice)):
             if (dice[x] == 1):
                 list[0] = 1;
@@ -212,29 +284,109 @@ class Rules:
             if (dice[x] == 6):
                 list[5] = 6;
         
-        print("detecting three of a kind")
+        #print("detecting three of a kind")
+        #print(list)
         #detects three of a kind, going by possible triplet
-        if (list[3] == 4 and list[4] == 5 and list[5] == 6):
-            sum = list[3] + list[4] + list[5]
-            print("You have Three of a Kind! Sum: ", sum)
-            threeOfAKind = True
-            return threeOfAKind
-        elif(list[2] == 3 and list[3] == 4 and list[4] == 5):
-            sum = list[2] + list[3] + list[4]
-            print("You have Three of a Kind! Sum: ", sum)
-            threeOfAKind = True
-            return threeOfAKind
-        elif(list[1] == 2 and list[2] == 3 and list[3] == 4):
-            sum = list[1] + list[2] + list[3]
-            print("You have Three of a Kind! Sum: ", sum)
-            threeOfAKind = True
-            return threeOfAKind
-        elif(list[0] == 1 and list[1] == 2 and list[2] == 2):
-            sum = list[0] + list[1] + list[2]
-            print("You have Three of a Kind! Sum: ", sum)
-            threeOfAKind = True
-            return threeOfAKind
+        if (list[2] == 3 and list[3] == 4 and list[4] == 5 and list[5] == 6):
+            sum = 30
+            print("You have a Small Straight! Sum: ", sum)
+            smallStraight = True
+            return smallStraight
+        elif(list[1] == 2 and list[2] == 3 and list[3] == 4 and list[4] == 5):
+            sum = 30
+            print("You have a Small Straight! Sum: ", sum)
+            smallStraight = True
+            return smallStraight
+        elif(list[0] == 1 and list[1] == 2 and list[2] == 3 and list[3] == 4):
+            sum = 30
+            print("You have a Small Straight! Sum: ", sum)
+            smallStraight = True
+            return smallStraight
 
+    # Function: isLargeStraight
+    # Date of code (Last updated): 9/27/2017
+    # Programmer: Brian Truong
+    # Description: To determine if the player rolled a Large Straight
+    # Input: list(dice)
+    # Output: Boolean largeStraight
+    def isLargeStraight(dice):
+        sum = 0
+        #print("Begin sorting")
+        list = [0, 0, 0, 0, 0, 0]
+
+        #detects dice number and assigns them a slot in list
+        #does not store duplicates
+        #print("Checking dices")
+        for x in range(len(dice)):
+            if (dice[x] == 1):
+                list[0] = 1;
+            if (dice[x] == 2):
+                list[1] = 2;
+            if (dice[x] == 3):
+                list[2] = 3;
+            if (dice[x] == 4):
+                list[3] = 4;
+            if (dice[x] == 5):
+                list[4] = 5;
+            if (dice[x] == 6):
+                list[5] = 6;
+        
+        #print("detecting three of a kind")
+        #print(list)
+        #detects three of a kind, going by possible triplet
+        if (list[1] == 2 and list[2] == 3 and list[3] == 4 and list[4] == 5 and list[5] == 6):
+            sum = 40
+            print("You have a Large Straight! Sum: ", sum)
+            largeStraight = True
+            return largeStraight
+        elif(list[0] == 1 and list[1] == 2 and list[2] == 3 and list[3] == 4 and list[4] == 5):
+            sum = 40
+            print("You have a Large Straight! Sum: ", sum)
+            largeStraight = True
+            return largeStraight
+
+    # Function: isYahtzee
+    # Date of code (Last updated): 9/28/2017
+    # Programmer: Brian Truong
+    # Description: Checks if the player has Yahtzee
+    # Input: dice
+    # Output: Boolean yahtzee
+    def isYahtzee(dice):
+        sum = 0
+        if (dice[0] == dice[1] == dice[2] == dice[3] == dice[4]):
+            sum = 50
+            print("You have Yahtzee! Sum: ", sum)
+            yahtzee = True
+            return yahtzee
+
+    # Function: isChance
+    # Date of code (Last updated): 9/28/2017
+    # Programmer: Brian Truong
+    # Description: Checks if the player has Chance
+    # Input: dice
+    # Output: Boolean chance
+    def isChance(dice):
+        sum = 0
+        sum = dice[0] + dice[1] + dice[2] + dice[3] + dice[4]
+        print("You have Chance! Sum: ", sum)
+        chance = True
+        return chance
+
+    # Function: runLowerSection
+    # Date of code (Last updated): 9/28/2017
+    # Programmer: Brian Truong
+    # Description: Runs all categories under the "Lower Section" rules of Yahtzee
+    # Input: list(dice)
+    # Output: N/A
+    def runLowerSection(dice):
+        dice.sort()
+        Rules.isYahtzee(dice)
+        Rules.isLargeStraight(dice)
+        Rules.isSmallStraight(dice)
+        Rules.isFullHouse(dice)
+        Rules.isFourOfAKind(dice)
+        Rules.isThreeOfAKind(dice)
+        Rules.isChance(dice)
 
 
 p1 = player
@@ -242,12 +394,10 @@ gameRules = Rules
 while (p1.numberOfRolls < 3 and p1.rollingDices != [0, 0, 0, 0, 0, 0]):
     p1.rollDices(p1.rollingDices)
     p1.keepDices(p1.rollingDices, p1.keptDice)
-
+p1.keptDice.sort()
+p1.printDices(p1.keptDice, "Kept Dice")
 gameRules.runUpperSection(p1.keptDice)
-
-gameRules.isThreeOfAKind(p1.keptDice)
-
-
+gameRules.runLowerSection(p1.keptDice)
 
 
 #Resources:
