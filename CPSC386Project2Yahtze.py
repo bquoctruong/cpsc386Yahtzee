@@ -199,8 +199,7 @@ class player:
         for x in range(len(dice)):
             if (dice[x] != 0):
                 print("Dice", x + 1, ":", dice[x])
-                if (player.numberOfRolls < 3):
-                    displayRollingDice(dice[x], x)
+                displayRollingDice(dice[x], x)
 
     # Function: keepDices
     # Date of code (Last updated): 9/26/2017
@@ -554,13 +553,13 @@ roll_sound = load_sound('roll.wav')
 p1 = player
 gameRules = Rules
 while (p1.numberOfRolls < 3 and p1.rollingDices != [0, 0, 0, 0, 0, 0]):
-    clock.tick(60)
     p1.rollDices(p1.rollingDices)
     p1.keepDices(p1.rollingDices, p1.keptDice)
+    clock.tick(60)
 
-# print("These are the final dice: ", p1.keptDice) #used to check images
+print("These are the final dice: ", p1.keptDice) #used to check images
 p1.keptDice.sort()
-p1.printDices(p1.keptDice, "Kept Dice")
+#p1.printDices(p1.keptDice, "Kept Dice")
 gameRules.runUpperSection(p1.keptDice)
 gameRules.runLowerSection(p1.keptDice)
 
