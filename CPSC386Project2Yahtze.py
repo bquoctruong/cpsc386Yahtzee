@@ -1,11 +1,13 @@
 # Name: Brian Truong
-# Date: 9/25/10`7
+# Date: 9/25/2017
 # File Name: CPSC386Project2Yahtze.py
 # File Description: py file that contains the necessary code to play a game of Yahtzee
 
 from pygame import *
 from random import *
+import pygame.time
 import time
+
 
 # Function: mainScreen
 # Date of code (Last updated): 9/28
@@ -27,6 +29,7 @@ def mainScreen():
 
     return screen
 
+
 # Function: playerAvatars
 # Date of code (Last updated): 9/28
 # Programmer: Andy Nguyen
@@ -36,27 +39,63 @@ def mainScreen():
 # Output: Two circles representing the player(s) or computer
 
 def playerAvatars(screen):
-    #May change definition to accept (screen,color) to change color & indicate turns
-    P1color = (0, 119, 255) #blue
-    P2color = (255, 0, 25) #red
+    # May change definition to accept (screen,color) to change color & indicate turns
+    P1color = (0, 119, 255)  # blue
+    P2color = (255, 0, 25)  # red
     avatarP1 = draw.circle(screen, P1color, (500, 650), 50)
     avatarP2 = draw.circle(screen, P2color, (500, 80), 50)
+
     display.update()
 
-# Function: mainScreen
-# Date of code (Last updated): 9/28
+
+# Function: displayRollingDice
+# Date of code (Last updated): 9/29
 # Programmer: Andy Nguyen
-# Description: Prints the game screen
+# Description: Prints images of dice not kept by player(s) or computer
 #
-# Input: Takes in main game screen, array and its current iteration
-# Output: Displays six dice pictures of current rolled dice
-def displayDicePicture(screen, array, iteration):
-    dice1 = image.load("dice1.png").convert_alpha()
-    dice2 = image.load("dice2.png").convert_alpha()
-    dice3 = image.load("dice3.png").convert_alpha()
-    dice4 = image.load("dice4.png").convert_alpha()
-    dice5 = image.load("dice5.png").convert_alpha()
-    dice6 = image.load("dice6.png").convert_alpha()
+# Input: Takes in an array and its iteration
+# Output: Outputs dice images in selected coordinates
+def displayRollingDice(array, iteration):
+    if array == 1:
+        diceNumber = dice1
+    elif array == 2:
+        diceNumber = dice2
+    elif array == 3:
+        diceNumber = dice3
+    elif array == 4:
+        diceNumber = dice4
+    elif array == 5:
+        diceNumber = dice5
+    elif array == 6:
+        diceNumber = dice6
+
+    # displays dices in selected coordinates
+    if iteration == 0:
+        display.get_surface().blit(diceNumber, (125, 300))
+    if iteration == 1:
+        display.get_surface().blit(diceNumber, (280, 300))
+    if iteration == 2:
+        display.get_surface().blit(diceNumber, (435, 300))
+    if iteration == 3:
+        display.get_surface().blit(diceNumber, (590, 300))
+    if iteration == 4:
+        display.get_surface().blit(diceNumber, (745, 300))
+
+    display.flip()
+
+
+# Function: displayKeptDice
+# Date of code (Last updated): 9/29
+# Programmer: Andy Nguyen
+# Description: Moves player kept dice down
+#
+# Input: Takes in an array and its iteration
+# Output: Outputs dice images in selected coordinates
+
+def displayKeptDice(array, iteration):
+    eraseColor = (0, 170, 0)
+    eraseSize = 150
+    moveDicePosition = 100
 
     if array == 1:
         diceNumber = dice1
@@ -71,19 +110,25 @@ def displayDicePicture(screen, array, iteration):
     elif array == 6:
         diceNumber = dice6
 
-    #displays dices in selected coordinates
+    # Erases previous dice image with a color square and draws new
     if iteration == 0:
-        screen.blit(diceNumber, (125, 300))
+        draw.rect(display.get_surface(), eraseColor, (125, 300, eraseSize, eraseSize))
+        display.get_surface().blit(diceNumber, (125, 300 + moveDicePosition))
     if iteration == 1:
-        screen.blit(diceNumber, (280, 300))
+        draw.rect(display.get_surface(), eraseColor, (280, 300, eraseSize, eraseSize))
+        display.get_surface().blit(diceNumber, (280, 300 + moveDicePosition))
     if iteration == 2:
-        screen.blit(diceNumber, (435, 300))
+        draw.rect(display.get_surface(), eraseColor, (435, 300, eraseSize, eraseSize))
+        display.get_surface().blit(diceNumber, (435, 300 + moveDicePosition))
     if iteration == 3:
-        screen.blit(diceNumber, (590, 300))
+        draw.rect(display.get_surface(), eraseColor, (590, 300, eraseSize, eraseSize))
+        display.get_surface().blit(diceNumber, (590, 300 + moveDicePosition))
     if iteration == 4:
-        screen.blit(diceNumber, (745, 300))
+        draw.rect(display.get_surface(), eraseColor, (745, 300, eraseSize, eraseSize))
+        display.get_surface().blit(diceNumber, (745, 300 + moveDicePosition))
 
-    display.flip()
+    display.update()
+
 
 # Function: load_sound
 # Date of code (Last updated): 9/28
@@ -154,7 +199,7 @@ class player:
         for x in range(len(dice)):
             if (dice[x] != 0):
                 print("Dice", x + 1, ":", dice[x])
-                displayDicePicture(display.get_surface(), dice[x], x)
+                displayRollingDice(dice[x], x)
 
     # Function: keepDices
     # Date of code (Last updated): 9/26/2017
@@ -167,11 +212,14 @@ class player:
         player.printDices(rolledDices, "Rolled dices")
         for x in range(len(rolledDices)):
             if (rolledDices[x] != 0 and keptDice[x] == 0):
-                decision = input("Press Y/N to keep Dice" + str(x + 1) + ":")
+                if (player.numberOfRolls == 3):
+                    decision = "Y"
+                else:
+                    decision = input("Press Y/N to keep Dice" + str(x + 1) + ":")
                 if (decision.upper() == "Y"):
                     keptDice[x] = rolledDices[x]
-                    displayDicePicture(display.get_surface(), keptDice[x], x)
                     rolledDices[x] = 0
+                    displayKeptDice(keptDice[x], x)
 
 
 # Class: Rules
@@ -489,9 +537,16 @@ class Rules:
         Rules.isChance(dice)
 
 
+# initializes assets
+clock = pygame.time.Clock()
 currentScreen = mainScreen()
 playerAvatars(currentScreen)
-
+dice1 = image.load("dice1.png").convert_alpha()
+dice2 = image.load("dice2.png").convert_alpha()
+dice3 = image.load("dice3.png").convert_alpha()
+dice4 = image.load("dice4.png").convert_alpha()
+dice5 = image.load("dice5.png").convert_alpha()
+dice6 = image.load("dice6.png").convert_alpha()
 reroll_sound = load_sound('reroll.wav')
 roll_sound = load_sound('roll.wav')
 
@@ -500,14 +555,15 @@ gameRules = Rules
 while (p1.numberOfRolls < 3 and p1.rollingDices != [0, 0, 0, 0, 0, 0]):
     p1.rollDices(p1.rollingDices)
     p1.keepDices(p1.rollingDices, p1.keptDice)
+    clock.tick(60)
 
+print("These are the final dice: ", p1.keptDice) #used to check images
 p1.keptDice.sort()
-p1.printDices(p1.keptDice, "Kept Dice")
-display.flip()
+#p1.printDices(p1.keptDice, "Kept Dice")
 gameRules.runUpperSection(p1.keptDice)
 gameRules.runLowerSection(p1.keptDice)
 
-time.sleep(5)
+time.sleep(10)
 quit()
 
 # Resources:
