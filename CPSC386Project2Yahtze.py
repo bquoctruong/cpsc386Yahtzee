@@ -3,11 +3,11 @@
 # File Name: CPSC386Project2Yahtze.py
 # File Description: py file that contains the necessary code to play a game of Yahtzee
 
-from pygame import *
-from random import *
-import pygame.time
 import time
+from random import *
 
+import pygame.time
+from pygame import *
 
 # Function: mainScreen
 # Date of code (Last updated): 9/28
@@ -420,17 +420,17 @@ class Rules:
         # print("Checking dices")
         for x in range(len(dice)):
             if (dice[x] == 1):
-                list[0] = 1;
+                list[0] = 1
             if (dice[x] == 2):
-                list[1] = 2;
+                list[1] = 2
             if (dice[x] == 3):
-                list[2] = 3;
+                list[2] = 3
             if (dice[x] == 4):
-                list[3] = 4;
+                list[3] = 4
             if (dice[x] == 5):
-                list[4] = 5;
+                list[4] = 5
             if (dice[x] == 6):
-                list[5] = 6;
+                list[5] = 6
 
         # print("detecting three of a kind")
         # print(list)
@@ -467,17 +467,17 @@ class Rules:
         # print("Checking dices")
         for x in range(len(dice)):
             if (dice[x] == 1):
-                list[0] = 1;
+                list[0] = 1
             if (dice[x] == 2):
-                list[1] = 2;
+                list[1] = 2
             if (dice[x] == 3):
-                list[2] = 3;
+                list[2] = 3
             if (dice[x] == 4):
-                list[3] = 4;
+                list[3] = 4
             if (dice[x] == 5):
-                list[4] = 5;
+                list[4] = 5
             if (dice[x] == 6):
-                list[5] = 6;
+                list[5] = 6
 
         # print("detecting three of a kind")
         # print(list)
@@ -547,15 +547,16 @@ dice3 = image.load("dice3.png").convert_alpha()
 dice4 = image.load("dice4.png").convert_alpha()
 dice5 = image.load("dice5.png").convert_alpha()
 dice6 = image.load("dice6.png").convert_alpha()
-reroll_sound = load_sound('reroll.wav')
 roll_sound = load_sound('roll.wav')
+display.update() #random display update to hopefully fix a bug
 
 p1 = player
 gameRules = Rules
 while (p1.numberOfRolls < 3 and p1.rollingDices != [0, 0, 0, 0, 0, 0]):
+    clock.tick(60)
     p1.rollDices(p1.rollingDices)
     p1.keepDices(p1.rollingDices, p1.keptDice)
-    clock.tick(60)
+    display.update()
 
 print("These are the final dice: ", p1.keptDice) #used to check images
 p1.keptDice.sort()
@@ -563,7 +564,7 @@ p1.keptDice.sort()
 gameRules.runUpperSection(p1.keptDice)
 gameRules.runLowerSection(p1.keptDice)
 
-time.sleep(10)
+time.delay(5) #Pause to check if last dice correct
 quit()
 
 # Resources:
