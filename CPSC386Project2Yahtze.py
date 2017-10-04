@@ -9,6 +9,7 @@ from random import *
 import pygame.time
 from pygame import *
 
+
 # Function: mainScreen
 # Date of code (Last updated): 9/28
 # Programmer: Andy Nguyen
@@ -44,7 +45,6 @@ def playerAvatars(screen):
     P2color = (255, 0, 25)  # red
     avatarP1 = draw.circle(screen, P1color, (500, 650), 50)
     avatarP2 = draw.circle(screen, P2color, (500, 80), 50)
-
     display.update()
 
 
@@ -81,7 +81,7 @@ def displayRollingDice(array, iteration):
     if iteration == 4:
         display.get_surface().blit(diceNumber, (745, 300))
 
-    display.flip()
+    display.update()
 
 
 # Function: displayKeptDice
@@ -541,30 +541,34 @@ class Rules:
 clock = pygame.time.Clock()
 currentScreen = mainScreen()
 playerAvatars(currentScreen)
-dice1 = image.load("dice1.png").convert_alpha()
-dice2 = image.load("dice2.png").convert_alpha()
-dice3 = image.load("dice3.png").convert_alpha()
-dice4 = image.load("dice4.png").convert_alpha()
-dice5 = image.load("dice5.png").convert_alpha()
-dice6 = image.load("dice6.png").convert_alpha()
+dice1 = image.load("dice1.png").convert()
+dice2 = image.load("dice2.png").convert()
+dice3 = image.load("dice3.png").convert()
+dice4 = image.load("dice4.png").convert()
+dice5 = image.load("dice5.png").convert()
+dice6 = image.load("dice6.png").convert()
 roll_sound = load_sound('roll.wav')
-display.update() #random display update to hopefully fix a bug
+display.update()  # random display update to hopefully fix a bug
 
 p1 = player
 gameRules = Rules
+time.delay(20)
+# I am assuming the main issue with the image bugs is because screen focus.
+# The input() command is causing major lag. Delay should give you a few more seconds before it breaks the program
+
 while (p1.numberOfRolls < 3 and p1.rollingDices != [0, 0, 0, 0, 0, 0]):
-    clock.tick(60)
     p1.rollDices(p1.rollingDices)
     p1.keepDices(p1.rollingDices, p1.keptDice)
-    display.update()
+    display.flip()
+    clock.tick(60)
 
-print("These are the final dice: ", p1.keptDice) #used to check images
+print("These are the final dice: ", p1.keptDice)  # used to check images
 p1.keptDice.sort()
-#p1.printDices(p1.keptDice, "Kept Dice")
+# p1.printDices(p1.keptDice, "Kept Dice")
 gameRules.runUpperSection(p1.keptDice)
 gameRules.runLowerSection(p1.keptDice)
 
-time.delay(5) #Pause to check if last dice correct
+time.delay(5)  # Pause to check if last dice correct
 quit()
 
 # Resources:
