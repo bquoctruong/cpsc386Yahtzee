@@ -19,6 +19,10 @@ from pygame import *
 #               to class Player. Functionality will be for
 #               level-0 AI and player choice
 
+#10/8 UPDATE: -Added button to roll dice
+#               -New clickable image
+#
+
 # Function: mainScreen
 # Date of code (Last updated): 9/28
 # Programmer: Andy Nguyen
@@ -52,8 +56,8 @@ def playerAvatars(screen):
     # May change definition to accept (screen,color) to change color & indicate turns
     P1color = (0, 119, 255)  # blue
     P2color = (255, 0, 25)  # red
-    avatarP1 = draw.circle(screen, P1color, (500, 650), 50)
-    avatarP2 = draw.circle(screen, P2color, (500, 80), 50)
+    avatarP1 = draw.circle(screen, P1color, (200, 650), 50)
+    avatarP2 = draw.circle(screen, P2color, (800, 650), 50)
     display.update()
 
 
@@ -65,6 +69,11 @@ def playerAvatars(screen):
 # Input: Takes in an array and its iteration
 # Output: Outputs dice images in selected coordinates
 def displayRollingDice(array, iteration):
+
+    # eraseColor = (0, 170, 0)
+    # eraseSize = 150
+    # moveDicePosition = 100
+
     if array == 1:
         diceNumber = dice1
     elif array == 2:
@@ -77,7 +86,6 @@ def displayRollingDice(array, iteration):
         diceNumber = dice5
     elif array == 6:
         diceNumber = dice6
-
     # displays dices in selected coordinates
     if iteration == 0:
         display.get_surface().blit(diceNumber, (125, 300))
@@ -91,7 +99,6 @@ def displayRollingDice(array, iteration):
         display.get_surface().blit(diceNumber, (745, 300))
 
     display.update()
-
 
 # Function: displayKeptDice
 # Date of code (Last updated): 9/29
@@ -251,8 +258,8 @@ class player:
 # Date of code (Last updated): 10/6/2017
 # Programmer: Brian Truong
 # Description: Given player dices, determines what points may be given to the player
-# Input: 
-# Output: 
+# Input:
+# Output:
 class Rules:
     aces = False
     twos = False
@@ -284,14 +291,14 @@ class Rules:
     yahtzeeSum = 0
     chanceSum = 0
 
-    
+
 
     # Function: runUpperSection
     # Date of code (Last updated): 9/25/2017
     # Programmer: Brian Truong
     # Description: runs the set of rules (as functions) belonging to the upper section of the game Yahtzee
     # Input: list(dice)
-    # Output: 
+    # Output:
     def runUpperSection(dice):
         Rules.isAces(dice)
         Rules.isTwos(dice)
@@ -305,7 +312,7 @@ class Rules:
     # Programmer: Brian Truong
     # Description: Given a set of dice, determines if the dices have aces and sums up all "aces"
     # Input: dice
-    # Output: 
+    # Output:
     def isAces(dice):
         sum = 0
         for x in range(len(dice)):
@@ -321,7 +328,7 @@ class Rules:
     # Programmer: Brian Truong
     # Description: Given a set of dice, determines if the dices have twos and sums up all "twos"
     # Input: dice
-    # Output: 
+    # Output:
     def isTwos(dice):
         sum = 0
         for x in range(len(dice)):
@@ -337,7 +344,7 @@ class Rules:
     # Programmer: Brian Truong
     # Description: Given a set of dice, determines if the dices have threes and sums up all "threes"
     # Input: dice
-    # Output: 
+    # Output:
     def isThrees(dice):
         sum = 0
         for x in range(len(dice)):
@@ -353,7 +360,7 @@ class Rules:
     # Programmer: Brian Truong
     # Description: Given a set of dice, determines if the dices have fours and sums up all "fours"
     # Input: dice
-    # Output: 
+    # Output:
     def isFours(dice):
         sum = 0
         for x in range(len(dice)):
@@ -369,7 +376,7 @@ class Rules:
     # Programmer: Brian Truong
     # Description: Given a set of dice, determines if the dices have fives and sums up all "fives"
     # Input: dice
-    # Output: 
+    # Output:
     def isFives(dice):
         sum = 0
         for x in range(len(dice)):
@@ -385,7 +392,7 @@ class Rules:
     # Programmer: Brian Truong
     # Description: Given a set of dice, determines if the dices have sixes and sums up all "sixes"
     # Input: dice
-    # Output: 
+    # Output:
     def isSixes(dice):
         sum = 0
         for x in range(len(dice)):
@@ -395,7 +402,7 @@ class Rules:
                 sixes = True
                 Rules.sixesSum = sum
                 print("You have Sixes! Sum: ", sum)
-    
+
     # Function: isThreeOfAKind
     # Date of code (Last updated): 10/6/2017
     # Programmer: Brian Truong
@@ -443,7 +450,7 @@ class Rules:
             fourOfAKind = True
             Rules.fourOfAKindSum = sum
             return fourOfAKind
-        
+
     # Function: isFullHouse
     # Date of code (Last updated): 10/6/2017
     # Programmer: Brian Truong
@@ -493,7 +500,7 @@ class Rules:
                 list[4] = 5;
             if (dice[x] == 6):
                 list[5] = 6;
-        
+
         #print("detecting three of a kind")
         #print(list)
         #detects three of a kind, going by possible triplet
@@ -543,7 +550,7 @@ class Rules:
                 list[4] = 5;
             if (dice[x] == 6):
                 list[5] = 6;
-        
+
         #print("detecting three of a kind")
         #print(list)
         #detects three of a kind, going by possible triplet
@@ -755,10 +762,6 @@ class Rules:
         Rules.passAces(player)
         Rules.passChance(player)
 
-
-    
-
-
 # initializes assets
 clock = pygame.time.Clock()
 currentScreen = mainScreen()
@@ -769,20 +772,27 @@ dice3 = image.load("dice3.png").convert()
 dice4 = image.load("dice4.png").convert()
 dice5 = image.load("dice5.png").convert()
 dice6 = image.load("dice6.png").convert()
+diceImage = image.load("roll.png").convert()
 roll_sound = load_sound('roll.wav')
-display.update()  # random display update to hopefully fix a bug
+
+diceButton = display.get_surface().blit(diceImage, (400, 625))
 
 p1 = player
 gameRules = Rules
 time.delay(20)
-# I am assuming the main issue with the image bugs is because screen focus.
-# The input() command is causing major lag. Delay should give you a few more seconds before it breaks the program
 
 while (p1.numberOfRolls < 3 and p1.rollingDices != [0, 0, 0, 0, 0, 0]):
-    p1.rollDices(p1.rollingDices)
-    p1.keepDices(p1.rollingDices, p1.keptDice)
-    display.flip()
+
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            if diceButton.collidepoint(mouse_pos):
+                p1.rollDices(p1.rollingDices)
+                p1.keepDices(p1.rollingDices, p1.keptDice)
+
+    pygame.display.update()
     clock.tick(60)
+
 
 print("These are the final dice: ", p1.keptDice)  # used to check images
 p1.keptDice.sort()
