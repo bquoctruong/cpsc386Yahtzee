@@ -1,46 +1,39 @@
 
+import time
 import pygame
+
+from Rules import Rules
+from Player import Player
+from Block import Block
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
+def buildDicesPlacementBlockList(dicesPlacement, screen, xPositionList, yPositionList, valueMap):
+    dicesPlacementBlockList = []
+
+    for j in range(len(dicesPlacement)):
+        for i in range(len(dicesPlacement[j])):
+            print(str(i) + ", " + str(j) + ", "+str(xPositionList[i])+str(yPositionList[j]))
+            placementInfo = dicesPlacement[j][i];
+
+            if (placementInfo[0] == True):
+                val = placementInfo[1];
+                if (val < 1):
+                    val = 1
+                print(str(i) + ", " + str(j) + ", "+str(val)+valueMap[val]+str(xPositionList[i])+str(yPositionList[j]))
+                dicesPlacementBlockList.append(Block(screen, valueMap[val], xPositionList[i], yPositionList[j]))
+            
+    return dicesPlacementBlockList
+    
 pygame.init()
 
-class Block(pygame.sprite.Sprite):
-    def __init__(self, scr, imageFile, x, y):
+screenWidth = 1024
+screenHeight = 768
 
-        # Call the parent class (Sprite) constructor
-        super().__init__()
-
-        # Create an image of the block, and fill it with a color.
-        # This could also be an image loaded from the disk.
-        self.image = pygame.image.load(imageFile).convert()
-        self.image.set_colorkey(BLACK)
-
-        # Fetch the rectangle object that has the dimensions of the image.
-        # Update the position of this object by setting the values
-        # of rec.x and rect.y
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-        self.scr = scr
-        self.imageFile = imageFile
-        self.x = x
-        self.y = y
-
-    def draw(self):
-        self.scr.blit(self.image, [self.x, self.y])
-    
-    def updatePosition(self, x, y):
-        self.x = x
-        self.y = y
-        self.rect.x = x
-        self. rect.y = y
-
-size = (800, 600)
+size = ([screenWidth, screenHeight])
 screen = pygame.display.set_mode(size)
 
 pygame.display.set_caption("Yahtzee")
@@ -52,37 +45,21 @@ clock = pygame.time.Clock()
 # Game logic initialization
 backgroundColor = WHITE
 
-btnRun = pygame.Rect(10, 410, 200, 75) # creates a rect object
+btnRollDice = pygame.Rect(10, 510, 200, 75) # creates a rect object
 
-dice1 = Block(screen, "dice1.png", 10, 10)
+#refactor to build (diff=155)
+xPositionList = [125, 280, 435, 590, 745]
+yPositionList = [10, 300]
+valueMap = ["", "dice1.png", "dice2.png", "dice3.png", "dice4.png", "dice5.png", "dice6.png"];
 
-dice2 = Block(screen, "dice2.png", 210, 10)
-
-dice3 = pygame.image.load("dice3.png").convert()
-dice3.set_colorkey(WHITE)
-
-dice4 = pygame.image.load("dice4.png").convert()
-dice4.set_colorkey(WHITE)
-
-dice5 = pygame.image.load("dice5.png").convert()
-dice5.set_colorkey(WHITE)
-
-dice6 = pygame.image.load("dice6.png").convert()
-dice6.set_colorkey(WHITE)
+#(row, col) = (hasDie, value)
+dicesPlacement = [[(True, 0), (True, 0), (True, 0), (True, 0), (True, 0)], [(False, 0), (False, 0), (False, 0), (False, 0), (False, 0)] ]
 
 shake = pygame.mixer.Sound("shake.wav")
 roll = pygame.mixer.Sound("roll.wav")
 
-"""elif dice1.rect.collidepoint(mouse_pos):
-                if dice1.y == 10:
-                    dice1.y = 210
-                else:
-                    dice1.y = 10
-                print("dice1.y " + str(dice1.y))"""
-"""            if btnRun.collidepoint(mouse_pos):
-                #shake.play()
-                roll.play()
-"""
+dicesPlacementBlockList = buildDicesPlacementBlockList(dicesPlacement, screen, xPositionList, yPositionList, valueMap)
+
 while not done:
     mouse_pos = pygame.mouse.get_pos() # gets mouse position
     
@@ -91,30 +68,15 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if btnRun.collidepoint(mouse_pos):
+            if btnRollDice.collidepoint(mouse_pos):
                 roll.play()
             
-            elif dice1.rect.collidepoint(mouse_pos):
-                if dice1.y == 10:
-                    dice1.updatePosition(dice1.x, 210)
-                else:
-                    dice1.updatePosition(dice1.x, 10)
-
-                print("dice1.y " + str(dice1.y))
-                
-            elif dice2.rect.collidepoint(mouse_pos):
+            """elif dice2.rect.collidepoint(mouse_pos):
                 if dice2.y == 10:
-                    dice2.updatePosition(dice2.x, 210)
+                    dice2.updatePosition(dice2.x, 300)
                 else:
-                    dice2.updatePosition(dice2.x, 10)
+                    dice2.updatePosition(dice2.x, 10)"""
 
-                print("dice2.y " + str(dice2.y))
-                
-            else:
-                x = 1
-        else:
-            x = 1
-        
          # --- Game logic should go here
  
         # -- Screen-clearing code goes here
@@ -124,13 +86,10 @@ while not done:
         screen.fill(backgroundColor)
 
         # Copy image to screen:
-        dice1.draw()
-        dice2.draw()
-         
-        #screen.blit(dice3, [10, 210])
-        #screen.blit(dice4, [210, 210])
-
-        pygame.draw.rect(screen, RED, btnRun) # draw objects down here
+        for i in dicesPlacementBlockList:
+            i.draw();
+          
+        pygame.draw.rect(screen, RED, btnRollDice) # draw objects down here
 
 
         # --- Go ahead and update the screen with what we've drawn.
