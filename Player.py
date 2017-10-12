@@ -1,3 +1,5 @@
+from random import *
+
 # class: player
 # Date of code (Last updated): 9/26
 # Programmer: Brian Truong
@@ -11,8 +13,8 @@ class Player:
         # variables
         self.numberOfRolls = 0
         self.score = 0
-        self.rollingDices = [-1, -1, -1, -1, -1]
-        self.keptDice = [0, 0, 0, 0, 0]
+        self.rolledDices = [-1, -1, -1, -1, -1]
+        self.keptDices = [0, 0, 0, 0, 0]
 
         self.acesScore = 0
         self.twosScore = 0
@@ -37,9 +39,9 @@ class Player:
     def rollDices(self):
         #refactor
         #roll_sound.play()
-        for x in range(len(self.rollingDices)):
-            if (self.rollingDices[x] != 0):
-                self.rollingDices[x] = randint(1, 6)
+        for x in range(len(self.rolledDices)):
+            if (self.rolledDices[x] != 0):
+                self.rolledDices[x] = randint(1, 6)
         self.numberOfRolls += 1
         print("Roll number:" + str(self.numberOfRolls))
 
@@ -52,7 +54,7 @@ class Player:
     def printDices(self, dices, message):
         print(message)
         for x in range(len(dices)):
-            if (dice[x] != 0):
+            if (dices[x] != 0):
                 print("Dice", x + 1, ":", dices[x])
                 #refactor
                 #displayRollingDice(dice[x], x)
@@ -63,17 +65,9 @@ class Player:
     # Description: Allows player to keep dices for the purpose of Yahtzee
     # Input: rolledDices, keptDice
     # Output: N/A
-    def keepDices(self, rolledDices, keptDice):
-        decision = ""
-        self.printDices(rolledDices, "Rolled dices")
-        for x in range(len(rolledDices)):
-            if (rolledDices[x] != 0 and keptDice[x] == 0):
-                if (player.numberOfRolls == 3):
-                    decision = "Y"
-                else:
-                    decision = input("Press Y/N to keep Dice" + str(x + 1) + ":")
-                if (decision.upper() == "Y"):
-                    keptDice[x] = rolledDices[x]
-                    rolledDices[x] = 0
-                    #refactor
-                    #displayKeptDice(keptDice[x], x)
+    def keepDices(self, keepMask):
+        self.printDices(self.rolledDices, "Rolled dices")
+        for i in range(len(keepMask)):
+            if keepMask[i] != 0:
+                self.keptDices[i] = self.rolledDices[i]
+                self.rolledDices[i] = 0

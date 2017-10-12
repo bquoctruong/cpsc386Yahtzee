@@ -7,8 +7,9 @@
 class Rules:
 
     def __init__(self, dices):
-        self.dices = dices.sort()
-        
+        dices.sort()
+        self.dices = dices
+
         self.aces = (False, 0)
         self.twos = (False, 0)
         self.threes = (False, 0)
@@ -23,10 +24,6 @@ class Rules:
         self.yahtzee = (False, 0)
         self.chance = (False, 0)
 
-    def runSections(self):
-        runUpperSection()
-        runLowerSection()
-        
     # Function: runLowerSection
     # Date of code (Last updated): 9/28/2017
     # Programmer: Brian Truong
@@ -185,7 +182,7 @@ class Rules:
             sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
             print("You have Four of a Kind! Sum: ", sum)
             self.fourOfAKind = (True, sum)
-            
+
         return self.fourOfAKind
 
     # Function: isFullHouse
@@ -204,7 +201,7 @@ class Rules:
             sum = 25
             print("You have a Full House! Sum: ", sum)
             self.fullHouse = (True, sum)
-            
+
         return self.fullHouse
 
     # Function: isSmallStraight
@@ -249,7 +246,7 @@ class Rules:
             sum = 30
             print("You have a Small Straight! Sum: ", sum)
             self.smallStraight = (True, sum)
-            
+
         return self.smallStraight
 
     # Function: isLargeStraight
@@ -291,7 +288,7 @@ class Rules:
             sum = 40
             print("You have a Large Straight! Sum: ", sum)
             self.largeStraight = (True, sum)
-            
+
         return self.largeStraight
 
     # Function: isYahtzee
@@ -306,7 +303,7 @@ class Rules:
             sum = 50
             print("You have Yahtzee! Sum: ", sum)
             self.yahtzee = (True, sum)
-            
+
         return self.yahtzee
 
     # Function: isChance
@@ -315,10 +312,15 @@ class Rules:
     # Description: Checks if the player has Chance
     # Input: self.dices
     # Output: Boolean chance
-    def isChance(dice):
+    def isChance(self):
         sum = 0
         sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
         print("You have Chance! Sum: ", sum)
         self.chance = (True, sum)
-        
+
         return self.chance
+
+    def runSections(self):
+        self.runUpperSection()
+        self.runLowerSection()
+

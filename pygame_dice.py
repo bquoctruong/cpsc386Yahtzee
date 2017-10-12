@@ -16,14 +16,14 @@ def buildDicesPlacementBlockList(dicesPlacement, screen, xPositionList, yPositio
 
     for j in range(len(dicesPlacement)):
         for i in range(len(dicesPlacement[j])):
-            print(str(i) + ", " + str(j) + ", "+str(xPositionList[i])+str(yPositionList[j]))
+            #print(str(i) + ", " + str(j) + ", "+str(xPositionList[i])+str(yPositionList[j]))
             placementInfo = dicesPlacement[j][i];
 
             if (placementInfo[0] == True):
                 val = placementInfo[1];
                 if (val < 1):
                     val = 1
-                print(str(i) + ", " + str(j) + ", "+str(val)+valueMap[val]+str(xPositionList[i])+str(yPositionList[j]))
+                #print(str(i) + ", " + str(j) + ", "+str(val)+valueMap[val]+str(xPositionList[i])+str(yPositionList[j]))
                 dicesPlacementBlockList.append(Block(screen, valueMap[val], xPositionList[i], yPositionList[j]))
             
     return dicesPlacementBlockList
@@ -53,12 +53,14 @@ yPositionList = [10, 300]
 valueMap = ["", "dice1.png", "dice2.png", "dice3.png", "dice4.png", "dice5.png", "dice6.png"];
 
 #(row, col) = (hasDie, value)
-dicesPlacement = [[(True, 0), (True, 0), (True, 0), (True, 0), (True, 0)], [(False, 0), (False, 0), (False, 0), (False, 0), (False, 0)] ]
+dicesPlacement = [[(True, 4), (True, 5), (True, 1), (True, 3), (True, 6)], [(False, 0), (False, 0), (False, 0), (False, 0), (False, 0)] ]
 
 shake = pygame.mixer.Sound("shake.wav")
 roll = pygame.mixer.Sound("roll.wav")
 
 dicesPlacementBlockList = buildDicesPlacementBlockList(dicesPlacement, screen, xPositionList, yPositionList, valueMap)
+
+player1 = Player()
 
 while not done:
     mouse_pos = pygame.mouse.get_pos() # gets mouse position
@@ -69,6 +71,10 @@ while not done:
             done = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if btnRollDice.collidepoint(mouse_pos):
+                player1.rollDices()
+                for i in range(len(dicesPlacement[0])):
+                    dicesPlacement[0][i] = (True, player1.rolledDices[i])
+                dicesPlacementBlockList = buildDicesPlacementBlockList(dicesPlacement, screen, xPositionList, yPositionList, valueMap)
                 roll.play()
             
             """elif dice2.rect.collidepoint(mouse_pos):
