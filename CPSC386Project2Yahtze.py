@@ -30,17 +30,18 @@ from pygame import *
 #
 # Input: N/A
 # Output: N/A
+
 def mainScreen():
+    pygame.font.init()
     init()
     display.set_caption('Yahtzee')
     display.set_icon(image.load('icon.png'))
-    screen_width = 1024
+    screen_width = 1200
     screen_height = 768
     screen = display.set_mode([screen_width, screen_height])
     screenColor = (0, 170, 0)
     screen.fill(screenColor)
     display.flip()
-
     return screen
 
 
@@ -59,7 +60,6 @@ def playerAvatars(screen):
     avatarP1 = draw.circle(screen, P1color, (200, 650), 50)
     avatarP2 = draw.circle(screen, P2color, (800, 650), 50)
     display.update()
-
 
 # Function: displayRollingDice
 # Date of code (Last updated): 9/29
@@ -253,6 +253,46 @@ class player:
                     rolledDices[x] = 0
                     displayKeptDice(keptDice[x], x)
 
+    # Function: displayScore
+    # Date of code (Last updated): 10/18/17
+    # Programmer: Andrew Nguyen
+    # Description: Prints out the score of a player
+    # Input: a player
+    # Output: Prints image on screen
+    def displayScore(player):
+        xCoord = 1079
+        yCoord = 243
+        nPixels = 20
+
+        oneSurface = gameFont.render(str(player.acesScore), False, (0, 0, 0))
+        twoSurface = gameFont.render(str(player.twosScore), False, (0, 0, 0))
+        threeSurface = gameFont.render(str(player.threesScore), False, (0, 0, 0))
+        fourSurface = gameFont.render(str(player.foursScore), False, (0, 0, 0))
+        fiveSurface = gameFont.render(str(player.fivesScore), False, (0, 0, 0))
+        sixSurface = gameFont.render(str(player.sixesScore), False, (0, 0, 0))
+        threeKindSurface = gameFont.render(str(player.threeOfAKindScore), False, (0, 0, 0))
+        fourKindSurface = gameFont.render(str(player.fourOfAKindScore), False, (0, 0, 0))
+        fullSurface = gameFont.render(str(player.fullHouseScore), False, (0, 0, 0))
+        smallSurface = gameFont.render(str(player.smallStraightScore), False, (0, 0, 0))
+        largeSurface = gameFont.render(str(player.largeStraightScore), False, (0, 0, 0))
+        yahtzeeSurface = gameFont.render(str(player.yahtzeeScore), False, (0, 0, 0))
+        chanceSurface = gameFont.render(str(player.chanceScore), False, (0, 0, 0))
+
+        display.get_surface().blit(oneSurface, (xCoord, yCoord))
+        display.get_surface().blit(twoSurface, (xCoord, yCoord + nPixels * 1))
+        display.get_surface().blit(threeSurface, (xCoord, yCoord + nPixels * 2))
+        display.get_surface().blit(fourSurface, (xCoord, yCoord + nPixels * 3))
+        display.get_surface().blit(fiveSurface, (xCoord, yCoord + nPixels * 4))
+        display.get_surface().blit(sixSurface, (xCoord, yCoord + nPixels * 5))
+        display.get_surface().blit(threeKindSurface, (xCoord, yCoord + nPixels * 9))
+        display.get_surface().blit(fourKindSurface, (xCoord, yCoord + nPixels * 10))
+        display.get_surface().blit(fullSurface, (xCoord, yCoord + nPixels * 11))
+        display.get_surface().blit(smallSurface, (xCoord, yCoord + nPixels * 12))
+        display.get_surface().blit(largeSurface, (xCoord, yCoord + nPixels * 13))
+        display.get_surface().blit(yahtzeeSurface, (xCoord, yCoord + nPixels * 14))
+        display.get_surface().blit(chanceSurface, (xCoord, yCoord + nPixels * 15))
+
+        display.flip()
 
 # Class: Rules
 # Date of code (Last updated): 10/6/2017
@@ -763,6 +803,7 @@ class Rules:
         Rules.passChance(player)
 
 # initializes assets
+
 clock = pygame.time.Clock()
 currentScreen = mainScreen()
 playerAvatars(currentScreen)
@@ -772,10 +813,13 @@ dice3 = image.load("dice3.png").convert()
 dice4 = image.load("dice4.png").convert()
 dice5 = image.load("dice5.png").convert()
 dice6 = image.load("dice6.png").convert()
-diceImage = image.load("roll.png").convert()
-roll_sound = load_sound('roll.wav')
 
-diceButton = display.get_surface().blit(diceImage, (400, 625))
+scoreboardImg = image.load("scoreboard.png").convert()
+diceImg= image.load("roll.png").convert()
+roll_sound = load_sound('roll.wav')
+gameFont = pygame.font.SysFont('arial', 16)
+diceButton = display.get_surface().blit(diceImg, (400, 625))
+scoreboard = display.get_surface().blit(scoreboardImg, (950, 200))
 
 p1 = player
 gameRules = Rules
@@ -788,6 +832,7 @@ while (p1.numberOfRolls < 3 and p1.rollingDices != [0, 0, 0, 0, 0, 0]):
             mouse_pos = pygame.mouse.get_pos()
             if diceButton.collidepoint(mouse_pos):
                 p1.rollDices(p1.rollingDices)
+                p1.displayScore(p1)
                 p1.keepDices(p1.rollingDices, p1.keptDice)
 
     pygame.display.update()
