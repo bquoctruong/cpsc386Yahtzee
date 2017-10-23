@@ -48,7 +48,7 @@ def setDieDisplayItem(sceneItem, dices, prefix, y, relPos, doInitTurnItem):
             b.item = (relPos, i, val)
             sceneItem.addItem(b)
 
-def initTurn(valueMap, diceNameList, defaultDieValue, sceneItem, playerItem, playerLabelItem, oldPlayerItem):
+def initTurn(valueMap, diceNameList, defaultDieValue, sceneItem, playerItem, playerLabelItem, oldPlayerItem, statusLabelItem):
 
     oldPlayerItem.initializeTurn()
     
@@ -67,7 +67,8 @@ def initTurn(valueMap, diceNameList, defaultDieValue, sceneItem, playerItem, pla
         x += xInterval
 
     playerLabelItem.setText(playerItem.name)
-
+    statusLabelItem.setText("")
+    
     updateCategory(sceneItem, playerItem)
 
 def updateCategory(sceneItem, playerItem):
@@ -88,7 +89,8 @@ def updateCategory(sceneItem, playerItem):
         else:
             color = BLUE
         name = "cat-"+str(i+1)
-        b = BlockRectangleText(name, sceneItem, x, y, width, height, color, name)
+        fontSize = 10
+        b = BlockRectangleText(name, sceneItem, x, y, width, height, color, name, fontSize)
         b.item = i+1
         sceneItem.addItem(b)
         y += yInterval
@@ -124,8 +126,8 @@ defaultDie = 1
 
 s = Scene(screen, size[0], size[1], 30, 21, 3)
     
-player1 = Player("p1")
-player2 = Player("p2")
+player1 = Player("Player1")
+player2 = Player("Player2")
 
 scoreboard = BlockScoreboard("scoreboard.png", "scoreboard.png", s, 21, 10, player1, player2)
 btn = BlockImage("roll.png", "roll.png", s, 1, 15);
@@ -140,12 +142,23 @@ x = 23
 y = 1
 width = 100
 height = 50
-name = player.name
-playerLabel = BlockRectangleText("pLabel", s, x, y, width, height, WHITE, name)
+text = player.name
+fontSize = 20
+playerLabel = BlockRectangleText("playerLabel", s, x, y, width, height, WHITE, text, fontSize)
 s.addItem(playerLabel)
 
-initTurn(valueMap, diceNameList, defaultDie, s, player, playerLabel, otherPlayer)
+x = 23
+y = 3
+width = 225
+height = 50
+text = ""
+fontSize = 20
+statusLabel = BlockRectangleText("statusLabel", s, x, y, width, height, BLUE, text, fontSize)
+s.addItem(statusLabel)
 
+initTurn(valueMap, diceNameList, defaultDie, s, player, playerLabel, otherPlayer, statusLabel)
+
+allowRoll = True
 while not done:
     mouse_pos = pygame.mouse.get_pos() # gets mouse position
     
@@ -159,12 +172,13 @@ while not done:
 
             doInitTurn = False
             category = 0
-            if itemName == "roll.png":
+            if itemName == "roll.png" and allowRoll:
                 roll.play()
                 player.rollDices()
  
                 if player.numberOfRolls == 3:
-                    doInitTurn = True
+                    allowRoll = False
+                    statusLabel.setText("You must score this roll!")
                     
             elif itemName.startswith("cat-"):
                 category = s.itemList[itemName].item
@@ -212,15 +226,26 @@ while not done:
                         player = player1
                         otherPlayer = player2
 
-                    initTurn(valueMap, diceNameList, defaultDie, s, player, playerLabel, otherPlayer)
+                    initTurn(valueMap, diceNameList, defaultDie, s, player, playerLabel, otherPlayer, statusLabel)
+                    allowRoll = True
+                    statusLabel
                    
                 updateDisplay(s, player, doInitTurn)
                 doInitTurn = False
                 category = 0          
 
                 if player.isDone() and otherPlayer.isDone():
-                    done = True
-                    break
+                
+                    winner = None
+                    winnerMessage = ""
+                    if (player.totalScore() > otherPlayer.totalScore()):
+                        winner = player
+                    else:
+                        winner = otherPlayer
+                        
+                    winnerMessage = winner.name + " is the winner."
+                    statusLabel.setText(winnerMessage)
+                    
          # --- Game logic should go here
  
         # -- Screen-clearing code goes here

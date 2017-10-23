@@ -6,12 +6,13 @@ from Scene import Scene
 
 class BlockRectangleText(BlockRectangle):
     
-    def __init__(self, name, scene, x, y, width, height, color, text):
+    def __init__(self, name, scene, x, y, width, height, color, text, size):
 
         # Call the parent class (Sprite) constructor
         super().__init__(name, scene, x, y, width, height, color)
 
-        self.gameFont = pygame.font.SysFont('arial', 16)
+        self.size = size
+        self.gameFont = pygame.font.SysFont('arial', self.size)
         self.offset = (3, 3)
         self.setText(text)
         
