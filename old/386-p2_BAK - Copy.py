@@ -98,10 +98,10 @@ def updateCategoryButtons(sceneItem, playerItem):
         if i==5:
             y += lowerGap*yInterval
 
-def processAction(actionItem, sceneItem, allowRollItem):
+def processAction(action):
     doInitTurn = False
     category = 0
-    if actionItem == "roll.png" and allowRollItem:
+    if itemName == "roll.png" and allowRoll:
         roll.play()
         player.rollDices()
 
@@ -109,15 +109,15 @@ def processAction(actionItem, sceneItem, allowRollItem):
         #player.rolledDices = [6, 6, 6, 2, 2]
 
         if player.numberOfRolls == 3:
-            allowRollItem = False
+            allowRoll = False
             statusLabel.setText("You must score this roll!")
                                     
-    elif actionItem.startswith("cat-"):
-        category = s.itemList[actionItem].item
+    elif itemName.startswith("cat-"):
+        category = s.itemList[itemName].item
         doInitTurn = True                    
                     
-    elif actionItem.startswith("di-"):
-        parentItem = sceneItem.itemList[actionItem]
+    elif itemName.startswith("di-"):
+        parentItem = s.itemList[itemName]
         item = parentItem.item
 
         relPos = item[0]
@@ -142,64 +142,8 @@ def processAction(actionItem, sceneItem, allowRollItem):
         parentItem.item = (relPos, diex, val)    
         parentItem.updatePosition(parentItem.x, parentItem.y)
 
-    return (doInitTurn, category, allowRollItem)
 
-def postProcessAction(actionItem, sceneItem, player, otherPlayer, doInitTurn, category, allowRoll, playerLabel, statusLabel):
-    if actionItem != "":               
-        r = Rules(player.keptDices)
-        r.runSections()
-
-        player.updateScore(r)
-
-        if category > 0:
-            player.updateCategory(r, category)
-
-        if doInitTurn:
-            if player == player1 and not otherPlayer.isDone():
-                player = player2
-                otherPlayer = player1
-            else:
-                player = player1
-                otherPlayer = player2
-
-            initTurn(valueMap, diceNameList, defaultDie, sceneItem, player, playerLabel, otherPlayer, statusLabel)
-            allowRoll = True
-           
-        updateDisplay(sceneItem, player, doInitTurn)
-        doInitTurn = False
-        category = 0          
-
-        if player.isDone() and otherPlayer.isDone():
-        
-            winner = None
-            winnerMessage = ""
-            if (player.totalScore() > otherPlayer.totalScore()):
-                winner = player
-            else:
-                winner = otherPlayer
-                
-            winnerMessage = winner.name + " is the winner. Bye!"
-            statusLabel.setText(winnerMessage)
-
-    return (doInitTurn, category, allowRoll, player, otherPlayer)
-
-def gameLoopPostProcess(sceneItem, backgroundColor, clockItem):
-    # --- Game logic should go here
- 
-    # -- Screen-clearing code goes here
-
-    # Here, we clear the screen to white. Don't put other drawing commands
-    # above this, or they will be erased with this command.
-    sceneItem.screenPtr.fill(backgroundColor)
-
-    sceneItem.draw()
-
-    # --- Go ahead and update the screen with what we've drawn.
-    pygame.display.flip()
-
-    # --- Limit to 60 frames per second
-    clockItem.tick(60)
-        
+    
 pygame.init()
 pygame.font.init()
 
@@ -230,8 +174,6 @@ s = Scene(screen, size[0], size[1], 30, 21, 3)
     
 player1 = Player("Player1")
 player2 = Player("Player2")
-#preliminary AI
-player2.isAI = True
 
 scoreboard = BlockScoreboard("scoreboard.png", "scoreboard.png", s, 21, 10, player1, player2)
 btn = BlockImage("roll.png", "roll.png", s, 1, 15);
@@ -264,56 +206,109 @@ initTurn(valueMap, diceNameList, defaultDie, s, player, playerLabel, otherPlayer
 
 allowRoll = True
 while not done:
+    mouse_pos = pygame.mouse.get_pos() # gets mouse position
+    
+    for event in pygame.event.get():
 
-    if player.isAI:
+        if event.type == pygame.QUIT:
+            done = True
+        elif event.type == pygame.MOUSEBUTTONDOWN:
 
-        actionItem = "roll.png"
-        
-        processCriteria = processAction(actionItem, s, allowRoll)
+            itemName = s.getItemClicked(mouse_pos)
 
-        doInitTurn = processCriteria[0]
-        category = processCriteria[1]
-        allowRoll = processCriteria[2]
+            doInitTurn = False
+            category = 0
+            if itemName == "roll.png" and allowRoll:
+                roll.play()
+                player.rollDices()
 
-        processCriteria = postProcessAction(actionItem, s, player, otherPlayer, doInitTurn, category, allowRoll, playerLabel, statusLabel)
-
-        doInitTurn = processCriteria[0]
-        category = processCriteria[1]
-        allowRoll = processCriteria[2]
-        player = processCriteria[3]
-        otherPlayer = processCriteria[4]
-
-        gameLoopPostProcess(s, backgroundColor, clock)
-
-        pygame.time.delay(1000)
-        
-    else:
-        
-        mouse_pos = pygame.mouse.get_pos() # gets mouse position
-        
-        for event in pygame.event.get():
-
-            if event.type == pygame.QUIT:
-                done = True
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-
-                actionItem = s.getItemClicked(mouse_pos)
-
-                processCriteria = processAction(actionItem, s, allowRoll)
-
-                doInitTurn = processCriteria[0]
-                category = processCriteria[1]
-                allowRoll = processCriteria[2]
-
-                processCriteria = postProcessAction(actionItem, s, player, otherPlayer, doInitTurn, category, allowRoll, playerLabel, statusLabel)
+                #debug
+                #player.rolledDices = [6, 6, 6, 2, 2]
+ 
+                if player.numberOfRolls == 3:
+                    allowRoll = False
+                    statusLabel.setText("You must score this roll!")
+                    
+            elif itemName.startswith("cat-"):
+                category = s.itemList[itemName].item
+                doInitTurn = True                    
                 
-                doInitTurn = processCriteria[0]
-                category = processCriteria[1]
-                allowRoll = processCriteria[2]
-                player = processCriteria[3]
-                otherPlayer = processCriteria[4]
+            elif itemName.startswith("di-"):
+                parentItem = s.itemList[itemName]
+                item = parentItem.item
 
-            gameLoopPostProcess(s, backgroundColor, clock)           
+                relPos = item[0]
+                diex = item[1]
+                val = item[2]
+                rolledNewVal = None
+                keptNewVal = None
+                if relPos == 0:
+                    relPos = 1
+                    rolledNewVal = 0
+                    keptNewVal = val
+                    parentItem.y = 3
+                else:
+                    relPos = 0
+                    rolledNewVal = val
+                    keptNewVal = 0
+                    parentItem.y = 1
+
+                player.rolledDices[diex] = rolledNewVal
+                player.keptDices[diex] = keptNewVal
+                parentItem.item = (relPos, diex, val)    
+                parentItem.updatePosition(parentItem.x, parentItem.y)
+
+            if itemName != "":               
+                r = Rules(player.keptDices)
+                r.runSections()
+
+                player.updateScore(r)
+
+                if category > 0:
+                    player.updateCategory(r, category)
+
+                if doInitTurn:
+                    if player == player1 and not otherPlayer.isDone():
+                        player = player2
+                        otherPlayer = player1
+                    else:
+                        player = player1
+                        otherPlayer = player2
+
+                    initTurn(valueMap, diceNameList, defaultDie, s, player, playerLabel, otherPlayer, statusLabel)
+                    allowRoll = True
+                   
+                updateDisplay(s, player, doInitTurn)
+                doInitTurn = False
+                category = 0          
+
+                if player.isDone() and otherPlayer.isDone():
+                
+                    winner = None
+                    winnerMessage = ""
+                    if (player.totalScore() > otherPlayer.totalScore()):
+                        winner = player
+                    else:
+                        winner = otherPlayer
+                        
+                    winnerMessage = winner.name + " is the winner. Bye!"
+                    statusLabel.setText(winnerMessage)
+                    
+         # --- Game logic should go here
+ 
+        # -- Screen-clearing code goes here
+
+        # Here, we clear the screen to white. Don't put other drawing commands
+        # above this, or they will be erased with this command.
+        screen.fill(backgroundColor)
+
+        s.draw()
+        
+        # --- Go ahead and update the screen with what we've drawn.
+        pygame.display.flip()
+
+        # --- Limit to 60 frames per second
+        clock.tick(60)
 
 # Close the window and quit.
 pygame.quit()

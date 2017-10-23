@@ -28,7 +28,8 @@ class Player:
         self.largeStraightScore = (False, 0)
         self.yahtzeeScore = (False, 0)
         self.chanceScore = (False, 0)
-
+        self.isAI = False
+    
         #Warning: should not call methods in constructor
         #due to variable lifecycle and ordering of calls
         self.initializeTurn()
