@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 # Class: Rules
 # Date of code (Last updated): 9/27/2017
 # Programmer: Brian Truong
@@ -154,10 +156,8 @@ class Rules:
             print("You have " + str(n) + "! Sum: ", sum)
 
         return criteria
-            
-    def isNOfAKind(self, n):
 
-        criteria = (False, 0, 0)
+    def buildLookup(self):
         lookup = {}
 
         for i in self.dices:
@@ -166,7 +166,14 @@ class Rules:
                     lookup[i] += 1
                 else:
                     lookup[i] = 1
+                    
+        return lookup
+       
+    def isNOfAKind(self, n):
 
+        criteria = (False, 0, 0)
+        lookup = self.buildLookup()
+        
         for k, v in lookup.items():
             if v >= n:
                 criteria = (True, k, v)
@@ -211,18 +218,43 @@ class Rules:
     # Input: dice
     # Output: Boolean fullHouse
     def isFullHouse(self):
-        sum = 0
-        if self.dices[0] > 0 and (self.dices[0] == self.dices[1] and self.dices[2] > 0 and self.dices[2] == self.dices[3] == self.dices[4]):
-            sum = 25
-            print("You have a Full House! Sum: ", sum)
-            self.fullHouse = (True, sum)
-        elif self.dices[0] > 0 and (self.dices[0] == self.dices[1] == self.dices[2] and self.dices[3] > 0 and self.dices[3] == self.dices[4]):
-            sum = 25
-            print("You have a Full House! Sum: ", sum)
-            self.fullHouse = (True, sum)
 
-        return self.fullHouse
+        pairFound = (False, 0)
+        threeOfAKindFound = (False, 0)
 
+        lookup = self.buildLookup()
+
+        for k, v in lookup.items():
+            if v == 2:
+                pairFound = (True, k)
+            elif v == 3:
+                threeOfAKindFound = (True, k)
+
+        if pairFound[0] and threeOfAKindFound[0]:
+            self.fullHouse = (True, 25)
+        else:
+            self.fullHouse = (False, 0)
+
+    def buildSequentialList(self):
+
+        sortedList = []
+        tempList = sorted(deepcopy(self.dices))
+
+        sortedList.append(tempList[0])
+        for i in range(0, len(tempList)):
+            if i > 0 and (tempList[i]-tempList[i-1] == 1):
+                sortedList.append(tempList[i])
+
+        return sortedList
+
+    def processStraight(self, n, score):
+        
+        sortedList = self.buildSequentialList()
+        if len(sortedList) >= n:
+            return (True, score)
+        else:
+            return (False, 0)
+        
     # Function: isSmallStraight
     # Date of code (Last updated): 9/28/2017
     # Programmer: Brian Truong
@@ -230,44 +262,8 @@ class Rules:
     # Input: list(dice)
     # Output: Boolean smallStraight
     def isSmallStraight(self):
-        sum = 0
-        list = [0, 0, 0, 0, 0, 0]
-
-        # detects dice number and assigns them a slot in list
-        # does not store duplicates
-        # print("Checking dices")
-        for x in range(len(self.dices)):
-            if (self.dices[x] == 1):
-                list[0] = 1
-            if (self.dices[x] == 2):
-                list[1] = 2
-            if (self.dices[x] == 3):
-                list[2] = 3
-            if (self.dices[x] == 4):
-                list[3] = 4
-            if (self.dices[x] == 5):
-                list[4] = 5
-            if (self.dices[x] == 6):
-                list[5] = 6
-
-        # print("detecting three of a kind")
-        # print(list)
-        # detects three of a kind, going by possible triplet
-        if (list[2] == 3 and list[3] == 4 and list[4] == 5 and list[5] == 6):
-            sum = 30
-            print("You have a Small Straight! Sum: ", sum)
-            self.smallStraight = (True, sum)
-        elif (list[1] == 2 and list[2] == 3 and list[3] == 4 and list[4] == 5):
-            sum = 30
-            print("You have a Small Straight! Sum: ", sum)
-            self.smallStraight = (True, sum)
-        elif (list[0] == 1 and list[1] == 2 and list[2] == 3 and list[3] == 4):
-            sum = 30
-            print("You have a Small Straight! Sum: ", sum)
-            self.smallStraight = (True, sum)
-
-        return self.smallStraight
-
+        self.smallStraight = self.processStraight(4, 30)
+            
     # Function: isLargeStraight
     # Date of code (Last updated): 9/27/2017
     # Programmer: Brian Truong
@@ -275,40 +271,7 @@ class Rules:
     # Input: list(self.dices)
     # Output: Boolean largeStraight
     def isLargeStraight(self):
-        sum = 0
-        # print("Begin sorting")
-        list = [0, 0, 0, 0, 0, 0]
-
-        # detects dice number and assigns them a slot in list
-        # does not store duplicates
-        # print("Checking dices")
-        for x in range(len(self.dices)):
-            if (self.dices[x] == 1):
-                list[0] = 1
-            if (self.dices[x] == 2):
-                list[1] = 2
-            if (self.dices[x] == 3):
-                list[2] = 3
-            if (self.dices[x] == 4):
-                list[3] = 4
-            if (self.dices[x] == 5):
-                list[4] = 5
-            if (self.dices[x] == 6):
-                list[5] = 6
-
-        # print("detecting three of a kind")
-        # print(list)
-        # detects three of a kind, going by possible triplet
-        if (list[1] == 2 and list[2] == 3 and list[3] == 4 and list[4] == 5 and list[5] == 6):
-            sum = 40
-            print("You have a Large Straight! Sum: ", sum)
-            self.largeStraight = (True, sum)
-        elif (list[0] == 1 and list[1] == 2 and list[2] == 3 and list[3] == 4 and list[4] == 5):
-            sum = 40
-            print("You have a Large Straight! Sum: ", sum)
-            self.largeStraight = (True, sum)
-
-        return self.largeStraight
+        self.largeStraight = self.processStraight(5, 40)
 
     # Function: isYahtzee
     # Date of code (Last updated): 9/28/2017

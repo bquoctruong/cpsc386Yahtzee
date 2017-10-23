@@ -175,6 +175,9 @@ while not done:
             if itemName == "roll.png" and allowRoll:
                 roll.play()
                 player.rollDices()
+
+                #debug
+                #player.rolledDices = [6, 6, 6, 2, 2]
  
                 if player.numberOfRolls == 3:
                     allowRoll = False
@@ -243,7 +246,7 @@ while not done:
                     else:
                         winner = otherPlayer
                         
-                    winnerMessage = winner.name + " is the winner.\nExit by clicking the x on the window."
+                    winnerMessage = winner.name + " is the winner. Bye!"
                     statusLabel.setText(winnerMessage)
                     
          # --- Game logic should go here
