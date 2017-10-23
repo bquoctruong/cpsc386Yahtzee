@@ -1,5 +1,7 @@
 
-import time
+from time import *
+from random import *
+from pygame import *
 import pygame
 
 from Rules import Rules
@@ -10,6 +12,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+KINDA_GREEN = (0, 170, 0)
 
 def buildDicesPlacementBlockList(dicesPlacement, screen, xPositionList, yPositionList, valueMap):
     dicesPlacementBlockList = []
@@ -29,6 +32,7 @@ def buildDicesPlacementBlockList(dicesPlacement, screen, xPositionList, yPositio
     return dicesPlacementBlockList
     
 pygame.init()
+pygame.font.init()
 
 screenWidth = 1024
 screenHeight = 768
@@ -37,13 +41,14 @@ size = ([screenWidth, screenHeight])
 screen = pygame.display.set_mode(size)
 
 pygame.display.set_caption("Yahtzee")
+pygame.display.set_icon(pygame.image.load("icon.png"))
 
 done = False
 
 clock = pygame.time.Clock()
 
 # Game logic initialization
-backgroundColor = WHITE
+backgroundColor = KINDA_GREEN
 
 btnRollDice = pygame.Rect(10, 510, 200, 75) # creates a rect object
 

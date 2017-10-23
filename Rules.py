@@ -7,7 +7,7 @@
 class Rules:
 
     def __init__(self, dices):
-        dices.sort()
+
         self.dices = dices
 
         self.aces = (False, 0)
@@ -16,6 +16,7 @@ class Rules:
         self.fours = (False, 0)
         self.fives = (False, 0)
         self.sixes = (False, 0)
+        
         self.threeOfAKind = (False, 0)
         self.fourOfAKind = (False, 0)
         self.fullHouse = (False, 0)
@@ -24,6 +25,40 @@ class Rules:
         self.yahtzee = (False, 0)
         self.chance = (False, 0)
 
+    def selectCategory(self, index):
+        
+        item = None
+        
+        if index == 1:
+            item = self.aces
+        elif index == 2:
+            item = self.twos
+        elif index == 3:
+            item = self.threes
+        elif index == 4:
+            item = self.fours
+        elif index == 5:
+            item = self.fives
+        elif index == 6:
+            item = self.sixes
+
+        elif index == 7:
+            item = self.threeOfAKind
+        elif index == 8:
+            item = self.fourOfAKind
+        elif index == 9:
+            item = self.fullHouse
+        elif index == 10:
+            item = self.smallStraight
+        elif index == 11:
+            item = self.largeStraight
+        elif index == 12:
+            item = self.yahtzee
+        elif index == 13:
+            item = self.chance
+            
+        return item
+       
     # Function: runLowerSection
     # Date of code (Last updated): 9/28/2017
     # Programmer: Brian Truong
@@ -151,15 +186,15 @@ class Rules:
     # Output: Boolean threeOfAKind
     def isThreeOfAKind(self):
         sum = 0
-        if (self.dices[2] == self.dices[3] == self.dices[4]):
+        if self.dices[2] > 0 and (self.dices[2] == self.dices[3] == self.dices[4]):
             sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
             print("You have Three of a Kind! Sum: ", sum)
             self.threeOfAKind = (True, sum)
-        elif (self.dices[1] == self.dices[2] == self.dices[3]):
+        elif self.dices[1] > 0 and (self.dices[1] == self.dices[2] == self.dices[3]):
             sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
             print("You have Three of a Kind! Sum: ", sum)
             self.threeOfAKind = (True, sum)
-        elif (self.dices[0] == self.dices[1] == self.dices[2]):
+        elif self.dices[0] > 0 and (self.dices[0] == self.dices[1] == self.dices[2]):
             sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
             print("You have Three of a Kind! Sum: ", sum)
             self.threeOfAKind = (True, sum)
@@ -174,11 +209,11 @@ class Rules:
     # Output: Boolean fourOfAKind
     def isFourOfAKind(self):
         sum = 0
-        if (self.dices[1] == self.dices[2] == self.dices[3] == self.dices[4]):
+        if self.dices[1] > 0 and (self.dices[1] == self.dices[2] == self.dices[3] == self.dices[4]):
             sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
             print("You have Four of a Kind! Sum: ", sum)
             self.fourOfAKind = (True, sum)
-        elif (self.dices[0] == self.dices[1] == self.dices[2] == self.dices[3]):
+        elif self.dices[0] > 0 and (self.dices[0] == self.dices[1] == self.dices[2] == self.dices[3]):
             sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
             print("You have Four of a Kind! Sum: ", sum)
             self.fourOfAKind = (True, sum)
@@ -193,11 +228,11 @@ class Rules:
     # Output: Boolean fullHouse
     def isFullHouse(self):
         sum = 0
-        if (self.dices[0] == self.dices[1] and self.dices[2] == self.dices[3] == self.dices[4]):
+        if self.dices[0] > 0 and (self.dices[0] == self.dices[1] and self.dices[2] > 0 and self.dices[2] == self.dices[3] == self.dices[4]):
             sum = 25
             print("You have a Full House! Sum: ", sum)
             self.fullHouse = (True, sum)
-        elif (self.dices[0] == self.dices[1] == self.dices[2] and self.dices[3] == self.dices[4]):
+        elif self.dices[0] > 0 and (self.dices[0] == self.dices[1] == self.dices[2] and self.dices[3] > 0 and self.dices[3] == self.dices[4]):
             sum = 25
             print("You have a Full House! Sum: ", sum)
             self.fullHouse = (True, sum)
@@ -299,7 +334,7 @@ class Rules:
     # Output: Boolean yahtzee
     def isYahtzee(self):
         sum = 0
-        if (self.dices[0] == self.dices[1] == self.dices[2] == self.dices[3] == self.dices[4]):
+        if self.dices[0] > 0 and (self.dices[0] == self.dices[1] == self.dices[2] == self.dices[3] == self.dices[4]):
             sum = 50
             print("You have Yahtzee! Sum: ", sum)
             self.yahtzee = (True, sum)
@@ -315,8 +350,11 @@ class Rules:
     def isChance(self):
         sum = 0
         sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
-        print("You have Chance! Sum: ", sum)
-        self.chance = (True, sum)
+        if sum > 0:
+            print("You have Chance! Sum: ", sum)
+            self.chance = (True, sum)
+        else:
+            self.chance = (False, sum)
 
         return self.chance
 
