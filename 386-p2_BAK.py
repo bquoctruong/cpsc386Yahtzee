@@ -243,7 +243,7 @@ while not done:
                     else:
                         winner = otherPlayer
                         
-                    winnerMessage = winner.name + " is the winner."
+                    winnerMessage = winner.name + " is the winner.\nExit by clicking the x on the window."
                     statusLabel.setText(winnerMessage)
                     
          # --- Game logic should go here

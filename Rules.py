@@ -95,13 +95,7 @@ class Rules:
     # Input: dice
     # Output:
     def isAces(self):
-        sum = 0
-        for x in range(len(self.dices)):
-            if (self.dices[x] == 1):
-                sum += 1
-        if (sum > 0):
-            self.aces = (True, sum)
-            print("You have Aces! Sum: ", sum)
+        self.aces = self.processN(1)
 
     # Function: isTwos
     # Date of code (Last updated): 9/25/2017
@@ -110,14 +104,8 @@ class Rules:
     # Input: dice
     # Output:
     def isTwos(self):
-        sum = 0
-        for x in range(len(self.dices)):
-            if (self.dices[x] == 2):
-                sum += 2
-        if (sum > 0):
-            self.twos = (True, sum)
-            print("You have Twos! Sum: ", sum)
-
+        self.twos = self.processN(2)
+        
     # Function: isThrees
     # Date of code (Last updated): 9/25/2017
     # Programmer: Brian Truong
@@ -125,13 +113,7 @@ class Rules:
     # Input: dice
     # Output:
     def isThrees(self):
-        sum = 0
-        for x in range(len(self.dices)):
-            if (self.dices[x] == 3):
-                sum += 3
-        if (sum > 0):
-            self.threes = (True, sum)
-            print("You have Threes! Sum: ", sum)
+        self.threes = self.processN(3)
 
     # Function: isFours
     # Date of code (Last updated): 9/25/2017
@@ -140,14 +122,8 @@ class Rules:
     # Input: dice
     # Output:
     def isFours(self):
-        sum = 0
-        for x in range(len(self.dices)):
-            if (self.dices[x] == 4):
-                sum += 4
-        if (sum > 0):
-            self.fours = (True, sum)
-            print("You have Fours! Sum: ", sum)
-
+        self.fours = self.processN(4)
+        
     # Function: isFives
     # Date of code (Last updated): 9/25/2017
     # Programmer: Brian Truong
@@ -155,13 +131,7 @@ class Rules:
     # Input: dice
     # Output:
     def isFives(self):
-        sum = 0
-        for x in range(len(self.dices)):
-            if (self.dices[x] == 5):
-                sum += 5
-        if (sum > 0):
-            self.fives = (True, sum)
-            print("You have Fives! Sum: ", sum)
+        self.fives = self.processN(5)
 
     # Function: isSixes
     # Date of code (Last updated): 9/25/2017
@@ -170,13 +140,51 @@ class Rules:
     # Input: dice
     # Output:
     def isSixes(self):
+        self.sixes = self.processN(6)
+
+    def processN(self, n):
+
         sum = 0
-        for x in range(len(self.dices)):
-            if (self.dices[x] == 6):
-                sum += 6
+        criteria = (False, sum)
+        for i in range(len(self.dices)):
+            if (self.dices[i] == n):
+                sum += n
         if (sum > 0):
-            self.sixes = (True, sum)
-            print("You have Sixes! Sum: ", sum)
+            criteria = (True, sum)
+            print("You have " + str(n) + "! Sum: ", sum)
+
+        return criteria
+            
+    def isNOfAKind(self, n):
+
+        criteria = (False, 0, 0)
+        lookup = {}
+
+        for i in self.dices:
+            if i > 0:
+                if i in lookup:
+                    lookup[i] += 1
+                else:
+                    lookup[i] = 1
+
+        for k, v in lookup.items():
+            if v >= n:
+                criteria = (True, k, v)
+                break
+
+        return criteria
+
+    def buildIsNOfAKind(self, n):
+
+        criteria = self.isNOfAKind(3)
+        ruleCriteria = None
+        
+        if criteria[0]:
+            ruleCriteria = (True, criteria[1]*criteria[2])
+        else:
+            ruleCriteria = (False, 0, 0)
+
+        return ruleCriteria
 
     # Function: isThreeOfAKind
     # Date of code (Last updated): 9/28/2017
@@ -185,21 +193,7 @@ class Rules:
     # Input: list(dice)
     # Output: Boolean threeOfAKind
     def isThreeOfAKind(self):
-        sum = 0
-        if self.dices[2] > 0 and (self.dices[2] == self.dices[3] == self.dices[4]):
-            sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
-            print("You have Three of a Kind! Sum: ", sum)
-            self.threeOfAKind = (True, sum)
-        elif self.dices[1] > 0 and (self.dices[1] == self.dices[2] == self.dices[3]):
-            sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
-            print("You have Three of a Kind! Sum: ", sum)
-            self.threeOfAKind = (True, sum)
-        elif self.dices[0] > 0 and (self.dices[0] == self.dices[1] == self.dices[2]):
-            sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
-            print("You have Three of a Kind! Sum: ", sum)
-            self.threeOfAKind = (True, sum)
-
-        return self.threeOfAKind
+        self.threeOfAKind = self.buildIsNOfAKind(3)
 
     # Function: isFourOfAKind
     # Date of code (Last updated): 9/28/2017
@@ -208,17 +202,7 @@ class Rules:
     # Input: list(dice)
     # Output: Boolean fourOfAKind
     def isFourOfAKind(self):
-        sum = 0
-        if self.dices[1] > 0 and (self.dices[1] == self.dices[2] == self.dices[3] == self.dices[4]):
-            sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
-            print("You have Four of a Kind! Sum: ", sum)
-            self.fourOfAKind = (True, sum)
-        elif self.dices[0] > 0 and (self.dices[0] == self.dices[1] == self.dices[2] == self.dices[3]):
-            sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
-            print("You have Four of a Kind! Sum: ", sum)
-            self.fourOfAKind = (True, sum)
-
-        return self.fourOfAKind
+        self.fourOfAKind = self.buildIsNOfAKind(4)
 
     # Function: isFullHouse
     # Date of code (Last updated): 9/28/2017
@@ -349,7 +333,10 @@ class Rules:
     # Output: Boolean chance
     def isChance(self):
         sum = 0
-        sum = self.dices[0] + self.dices[1] + self.dices[2] + self.dices[3] + self.dices[4]
+
+        for i in self.dices:
+            sum += i
+
         if sum > 0:
             print("You have Chance! Sum: ", sum)
             self.chance = (True, sum)
