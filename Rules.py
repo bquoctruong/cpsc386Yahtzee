@@ -240,10 +240,12 @@ class Rules:
         sortedList = []
         tempList = sorted(deepcopy(self.dices))
 
-        sortedList.append(tempList[0])
         for i in range(0, len(tempList)):
-            if i > 0 and (tempList[i]-tempList[i-1] == 1):
-                sortedList.append(tempList[i])
+            if tempList[i] > 0:
+                if i == 0:
+                    sortedList.append(tempList[i])
+                elif i > 0 and (tempList[i]-tempList[i-1] == 1):
+                    sortedList.append(tempList[i])
 
         return sortedList
 
@@ -251,6 +253,7 @@ class Rules:
         
         sortedList = self.buildSequentialList()
         if len(sortedList) >= n:
+            print(sortedList)
             return (True, score)
         else:
             return (False, 0)
