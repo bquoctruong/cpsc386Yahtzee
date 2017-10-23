@@ -15,8 +15,6 @@ class Player:
         self.name = name
         
         # variables
-        self.initializeTurn()
-
         self.acesScore = (False, 0)
         self.twosScore = (False, 0)
         self.threesScore = (False, 0)
@@ -31,12 +29,49 @@ class Player:
         self.yahtzeeScore = (False, 0)
         self.chanceScore = (False, 0)
 
+        #Warning: should not call methods in constructor
+        #due to variable lifecycle and ordering of calls
+        self.initializeTurn()
+        
     def initializeTurn(self):
         
         self.numberOfRolls = 0
         self.rolledDices = [-1, -1, -1, -1, -1]
         self.keptDices = [0, 0, 0, 0, 0]
+        self.cleanScore()
 
+    def cleanScore(self):
+
+        resetValue = (False, 0)
+        
+        if not self.acesScore[0]:
+            self.acesScore = resetValue
+        if not self.twosScore[0]:
+            self.twosScore = resetValue
+        if not self.threesScore[0]:
+            self.threesScore = resetValue
+        if not self.foursScore[0]:
+            self.foursScore = resetValue    
+        if not self.fivesScore[0]:
+            self.fivesScore = resetValue    
+        if not self.sixesScore[0]:
+            self.sixesScore = resetValue
+            
+        if not self.threeOfAKindScore[0]:
+            self.threeOfAKindScore = resetValue
+        if not self.fourOfAKindScore[0]:
+            self.fourOfAKindScore = resetValue
+        if not self.fullHouseScore[0]:
+            self.fullHouseScore = resetValue
+        if not self.smallStraightScore[0]:
+            self.smallStraightScore = resetValue
+        if not self.largeStraightScore[0]:
+            self.largeStraightScore = resetValue
+        if not self.yahtzeeScore[0]:
+            self.yahtzeeScore = resetValue
+        if not self.chanceScore[0]:
+            self.chanceScore = resetValue
+            
     def categoryCount(self):
         return 13
     

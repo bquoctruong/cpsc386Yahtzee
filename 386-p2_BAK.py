@@ -26,12 +26,12 @@ def updateDisplay(sceneItem, playerItem, doInitTurnItem):
     
     sceneItem.clearWithPattern("di-")
 
-    setDieDisplayItem(sceneItem, playerItem.rolledDices, "di-0-", 1, 0, doInitTurnItem)
-    setDieDisplayItem(sceneItem, playerItem.keptDices, "di-1-", 3, 1, doInitTurnItem)
+    updateDieDisplays(sceneItem, playerItem.rolledDices, "di-0-", 1, 0, doInitTurnItem)
+    updateDieDisplays(sceneItem, playerItem.keptDices, "di-1-", 3, 1, doInitTurnItem)
 
-    updateCategory(sceneItem, playerItem)
+    updateCategoryButtons(sceneItem, playerItem)
 
-def setDieDisplayItem(sceneItem, dices, prefix, y, relPos, doInitTurnItem):
+def updateDieDisplays(sceneItem, dices, prefix, y, relPos, doInitTurnItem):
 
     for i in range(0, len(dices)):
 
@@ -69,9 +69,9 @@ def initTurn(valueMap, diceNameList, defaultDieValue, sceneItem, playerItem, pla
     playerLabelItem.setText(playerItem.name)
     statusLabelItem.setText("")
     
-    updateCategory(sceneItem, playerItem)
+    updateCategoryButtons(sceneItem, playerItem)
 
-def updateCategory(sceneItem, playerItem):
+def updateCategoryButtons(sceneItem, playerItem):
     
     sceneItem.clearWithPattern("cat-")
     

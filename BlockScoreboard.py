@@ -19,13 +19,13 @@ class BlockScoreboard(BlockImage):
         self.interOffset = (43, 20)
 
     def outputValue(self, val):
-        text = ""
-        if val[1] != 0:
+        text = " "
+        if val[0] or val[1] != 0:
             text = str(val[1])
         return text
     
     def outputValue1(self, val):
-        text = ""
+        text = " "
         if val != 0:
             text = str(val)
         return text
@@ -40,6 +40,7 @@ class BlockScoreboard(BlockImage):
 
         p1f1 = self.gameFont.render(self.outputValue(self.p1.acesScore), False, (0, 0, 0))
         p1f2 = self.gameFont.render(self.outputValue(self.p1.twosScore), False, (0, 0, 0))
+        #print(self.p1.threesScore)
         p1f3 = self.gameFont.render(self.outputValue(self.p1.threesScore), False, (0, 0, 0))
         p1f4 = self.gameFont.render(self.outputValue(self.p1.foursScore), False, (0, 0, 0))
         p1f5 = self.gameFont.render(self.outputValue(self.p1.fivesScore), False, (0, 0, 0))
