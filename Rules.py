@@ -176,7 +176,7 @@ class Rules:
 
     def buildIsNOfAKind(self, n):
 
-        criteria = self.isNOfAKind(3)
+        criteria = self.isNOfAKind(n)
         ruleCriteria = None
         
         if criteria[0]:
